@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Blocked Domains</title>
+    <style>
+      /* global box-sizing */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      /* full-viewport, no scroll */
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 40px 20px 60px;
+        background-color: #f4f5f7;
+        font-family: "Inter", sans-serif;
+        color: #24292e;
+        position: relative;
+      }
+      body.dark {
+        background-color: #1e1e1e;
+        color: #ddd;
+      }
+
+      h1 {
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 8px;
+        text-align: center;
+      }
+
+      /* count badge */
+      #countBadge {
+        font-size: 14px;
+        color: #57606a;
+        margin-bottom: 24px;
+      }
+      body.dark #countBadge {
+        color: #aaa;
+      }
+
+      /* fixed top-right bar */
+      #topBar {
+        position: fixed;
+        top: 12px;
+        right: 12px;
+      }
+      #topBar button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 4px;
+        color: inherit;
+      }
+      #topBar svg {
+        width: 24px;
+        height: 24px;
+        fill: currentColor;
+      }
+      #topBar button:hover {
+        opacity: 0.7;
+      }
+
+      /* card container */
+      .card {
+        width: 100%;
+        max-width: 480px;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 0;
+      }
+      body.dark .card {
+        background: #2b2b2b;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+      }
+
+      /* main controls row */
+      #controls {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 16px;
+        align-items: center;
+      }
+      #controls input,
+      #controls button {
+        font-size: 14px;
+      }
+
+      #domainInput {
+        flex: 1;
+        padding: 10px 14px;
+        border: 1px solid #d1d5da;
+        border-radius: 6px;
+      }
+      body.dark #domainInput {
+        background: #1e1e1e;
+        border-color: #444;
+        color: #ddd;
+      }
+
+      #addBtn {
+        padding: 10px 16px;
+        background-color: #f97316;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+      #addBtn:hover {
+        background-color: #e55d04;
+      }
+
+      /* filter & clear in controls */
+      #controls button:not(#addBtn) {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: inherit;
+      }
+      #controls button svg {
+        width: 20px;
+        height: 20px;
+        fill: currentColor;
+      }
+      #filterToggleBtn:hover,
+      #clearAllBtn:hover {
+        opacity: 0.7;
+      }
+      #clearAllBtn {
+        color: #f97316;
+      }
+      #clearAllBtn:hover {
+        text-decoration: underline;
+      }
+
+      /* filter input */
+      #filterContainer {
+        margin-bottom: 16px;
+      }
+      #filterInput {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid #d1d5da;
+        border-radius: 6px;
+        font-size: 14px;
+      }
+      body.dark #filterInput {
+        background: #1e1e1e;
+        border-color: #444;
+        color: #ddd;
+      }
+
+      /* table */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        border: 1px solid #e1e4e8;
+        table-layout: fixed;
+      }
+      body.dark table {
+        border-color: #444;
+      }
+      table colgroup col:first-child {
+        width: 70%;
+      }
+      table colgroup col:last-child {
+        width: 30%;
+      }
+
+      th,
+      td {
+        padding: 12px 16px;
+      }
+      th {
+        background: #f6f8fa;
+        font-weight: 600;
+        color: #57606a;
+        text-align: left;
+      }
+      body.dark th {
+        background: #333;
+        color: #ddd;
+      }
+      td:last-child {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        white-space: nowrap;
+      }
+      tr:hover {
+        background: #f6f8fa;
+      }
+      body.dark tr:hover {
+        background: #2e2e2e;
+      }
+
+      /* action buttons */
+      .action-btn {
+        background: transparent;
+        color: #f97316;
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+        padding: 4px 8px;
+      }
+      .action-btn:hover {
+        text-decoration: underline;
+      }
+
+      /* pagination */
+      #paginationControls {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 12px;
+        margin-top: 16px;
+      }
+      #paginationControls button {
+        background: #fff;
+        border: 1px solid #d1d5da;
+        border-radius: 4px;
+        padding: 6px;
+        cursor: pointer;
+      }
+      #paginationControls button:disabled {
+        opacity: 0.5;
+        cursor: default;
+      }
+      #paginationControls svg {
+        width: 16px;
+        height: 16px;
+        fill: currentColor;
+      }
+      body.dark #paginationControls button {
+        background: #2b2b2b;
+        border-color: #444;
+        color: #ddd;
+      }
+
+      /* footer */
+      footer {
+        position: fixed;
+        bottom: 8px;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        font-size: 12px;
+        color: #57606a;
+      }
+      body.dark footer {
+        color: #aaa;
+      }
+      footer a {
+        color: #f97316;
+        text-decoration: none;
+        font-weight: 600;
+      }
+      footer a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- custom modal overlay -->
+    <div
+      id="modalOverlay"
+      style="
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+      "
+    >
+      <div
+        style="
+          background: #fff;
+          border-radius: 6px;
+          padding: 20px;
+          width: 280px;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        "
+      >
+        <p id="modalMessage" style="margin-bottom: 12px; color: #24292e"></p>
+        <input
+          id="modalInput"
+          type="text"
+          style="
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 12px;
+            display: none;
+            border: 1px solid #d1d5da;
+            border-radius: 4px;
+          "
+        />
+        <div style="display: flex; justify-content: flex-end; gap: 8px">
+          <button
+            id="modalCancel"
+            style="
+              background: transparent;
+              border: none;
+              padding: 6px 12px;
+              cursor: pointer;
+            "
+          >
+            Cancel
+          </button>
+          <button
+            id="modalConfirm"
+            style="
+              background: #f97316;
+              color: #fff;
+              border: none;
+              padding: 6px 12px;
+              border-radius: 4px;
+              cursor: pointer;
+            "
+          >
+            OK
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- DARK MODE TOGGLE in fixed top-right -->
+    <div id="topBar">
+      <button id="darkModeBtn" title="Toggle dark mode"></button>
+    </div>
+
+    <h1>Block PostHog on…</h1>
+    <div id="countBadge">You’ve blocked <strong>0</strong> domains</div>
+
+    <div class="card">
+      <!-- main controls -->
+      <div id="controls">
+        <input id="domainInput" placeholder="example.com" />
+        <button id="addBtn">Add</button>
+        <button id="filterToggleBtn" title="Show/Hide filter">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M20.058 9.72255C21.0065 9.18858 21.4808 8.9216 21.7404 8.49142C22 8.06124 22 7.54232 22 6.50448V5.81466C22 4.48782 22 3.8244 21.5607 3.4122C21.1213 3 20.4142 3 19 3H5C3.58579 3 2.87868 3 2.43934 3.4122C2 3.8244 2 4.48782 2 5.81466V6.50448C2 7.54232 2 8.06124 2.2596 8.49142C2.5192 8.9216 2.99347 9.18858 3.94202 9.72255L6.85504 11.3624C7.49146 11.7206 7.80967 11.8998 8.03751 12.0976C8.51199 12.5095 8.80408 12.9935 8.93644 13.5872C9 13.8722 9 14.2058 9 14.8729L9 17.5424C9 18.452 9 18.9067 9.25192 19.2613C9.50385 19.6158 9.95128 19.7907 10.8462 20.1406C12.7248 20.875 13.6641 21.2422 14.3321 20.8244C15 20.4066 15 19.4519 15 17.5424V14.8729C15 14.2058 15 13.8722 15.0636 13.5872C15.1959 12.9935 15.488 12.5095 15.9625 12.0976"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+          </svg>
+        </button>
+        <button id="clearAllBtn" title="Clear all">Clear all</button>
+      </div>
+
+      <!-- filter input -->
+      <div id="filterContainer" style="display: none">
+        <input id="filterInput" placeholder="Search domains…" />
+      </div>
+
+      <!-- domain table -->
+      <table>
+        <colgroup>
+          <col />
+          <col />
+        </colgroup>
+        <thead>
+          <tr>
+            <th>Domain</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="domainsTbody">
+          <tr>
+            <td
+              colspan="2"
+              style="text-align: center; color: #57606a; padding: 16px"
+            >
+              No domains blocked yet
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- pagination -->
+      <div id="paginationControls">
+        <button id="prevPageBtn" aria-label="Prev page">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M15 18l-6-6 6-6"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+          </svg>
+        </button>
+        <span id="pageIndicator">1 / 1</span>
+        <button id="nextPageBtn" aria-label="Next page">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M9 6l6 6-6 6"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <footer>
+      Built with ❤️ by
+      <a href="https://marcjaner.com" target="_blank" rel="noopener"
+        >Marc Janer</a
+      >
+    </footer>
+
+    <script src="options.js"></script>
+  </body>
+</html>
