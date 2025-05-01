@@ -1,10 +1,10 @@
 {
   "manifest_version": 3,
   "name": "PostHog Self-Blocker",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Block PostHog recordings on domains you choose",
-  "permissions": ["storage"],
-  "host_permissions": ["<all_urls>"],
+  "permissions": ["storage", "declarativeNetRequest"],
+  "host_permissions": ["<all_urls>", "https://eu.i.posthog.com/*"],
   "options_ui": {
     "page": "options.html",
     "open_in_tab": true
@@ -18,5 +18,14 @@
       "js": ["content_script.js"],
       "run_at": "document_start"
     }
-  ]
+  ],
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "posthog_blocker",
+        "enabled": true,
+        "path": "rules.json"
+      }
+    ]
+  }
 }
