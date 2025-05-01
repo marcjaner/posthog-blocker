@@ -55,6 +55,8 @@
         position: fixed;
         top: 12px;
         right: 12px;
+        display: flex;
+        gap: 8px;
       }
       #topBar button {
         background: none;
@@ -66,7 +68,6 @@
       #topBar svg {
         width: 24px;
         height: 24px;
-        fill: currentColor;
       }
       #topBar button:hover {
         opacity: 0.7;
@@ -277,7 +278,7 @@
     </style>
   </head>
   <body>
-    <!-- custom modal overlay -->
+    <!-- existing custom modal for prompts -->
     <div
       id="modalOverlay"
       style="
@@ -302,6 +303,7 @@
           box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         "
       >
+        <!-- we will switch this to innerHTML in JS so it can host headings + paragraphs -->
         <p id="modalMessage" style="margin-bottom: 12px; color: #24292e"></p>
         <input
           id="modalInput"
@@ -344,8 +346,157 @@
       </div>
     </div>
 
-    <!-- DARK MODE TOGGLE in fixed top-right -->
+    <!-- ISSUE modal -->
+    <div
+      id="issueOverlay"
+      style="
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+      "
+    >
+      <div
+        style="
+          background: #fff;
+          border-radius: 6px;
+          padding: 20px;
+          width: 300px;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        "
+      >
+        <h2 style="margin: 0 0 12px; color: #24292e">Have an issue?</h2>
+        <p style="margin: 0 0 16px; color: #24292e">
+          You can open an issue in this project's repository.
+        </p>
+        <div style="display: flex; justify-content: flex-end; gap: 8px">
+          <button
+            id="issueCancel"
+            style="
+              background: transparent;
+              border: none;
+              padding: 6px 12px;
+              cursor: pointer;
+            "
+          >
+            Close
+          </button>
+          <button
+            id="issueConfirm"
+            style="
+              background: #f97316;
+              color: #fff;
+              border: none;
+              padding: 8px 12px;
+              border-radius: 4px;
+              cursor: pointer;
+            "
+          >
+            Open issue
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ABOUT modal -->
+    <div
+      id="aboutOverlay"
+      style="
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+      "
+    >
+      <div
+        style="
+          background: #fff;
+          border-radius: 6px;
+          padding: 20px;
+          width: 300px;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        "
+      >
+        <h2 style="margin: 0 0 12px; color: #24292e">Why this extension?</h2>
+        <p
+          style="
+            margin: 0 0 16px;
+            color: #24292e;
+            font-size: 0.9rem;
+            line-height: 1.5;
+          "
+        >
+          PostHog is an incredible product, that's why I've started using it on
+          all my projects. I frequently found myself looking at my own screen
+          recordings and, depite they have the filter tool, it appears to not
+          block recordings.
+        </p>
+        <div style="display: flex; justify-content: flex-end">
+          <button
+            id="aboutCancel"
+            style="
+              background: #f97316;
+              color: #fff;
+              border: none;
+              padding: 8px 20px;
+              border-radius: 4px;
+              cursor: pointer;
+            "
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- DARK MODE + NEW ICONS -->
     <div id="topBar">
+      <button id="issueBtn" title="Have an issue?">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M12 7V13"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
+          <circle cx="12" cy="16" r="1" fill="currentColor" />
+          <path
+            d="M9.21603 3C10.3958 2.33333 11.1703 2 12 2C13.1138 2 14.1282 2.6007 16.1569 3.80211L16.8431 4.20846C18.8718 5.40987 19.8862 6.01057 20.4431 7C21 7.98943 21 9.19084 21 11.5937V12.4063C21 14.8092 21 16.0106 20.4431 17C19.8862 17.9894 18.8718 18.5901 16.8431 19.7915L16.1569 20.1979C14.1282 21.3993 13.1138 22 12 22C10.8862 22 9.8718 21.3993 7.84308 20.1979L7.15692 19.7915C5.1282 18.5901 4.11384 17.9894 3.55692 17C3 16.0106 3 14.8092 3 12.4063V11.5937C3 9.19084 3 7.98943 3.55692 7C3.99599 6.21995 4.71938 5.68151 6 4.89984"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
+        </svg>
+      </button>
+      <button id="helpBtn" title="Why this extension?">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M10.125 8.875C10.125 7.83947 10.9645 7 12 7C13.0355 7 13.875 7.83947 13.875 8.875C13.875 9.56245 13.505 10.1635 12.9534 10.4899C12.478 10.7711 12 11.1977 12 11.75V13"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
+          <circle cx="12" cy="16" r="1" fill="currentColor" />
+          <path
+            d="M7 3.33782C8.47087 2.48697 10.1786 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 10.1786 2.48697 8.47087 3.33782 7"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
+        </svg>
+      </button>
       <button id="darkModeBtn" title="Toggle dark mode"></button>
     </div>
 
@@ -363,18 +514,7 @@
         <input id="domainInput" placeholder="example.com" />
         <button id="addBtn">Add</button>
         <button id="filterToggleBtn" title="Show/Hide filter">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M20.058 9.72255C21.0065 9.18858 21.4808 8.9216 21.7404 8.49142C22 8.06124 22 7.54232 22 6.50448V5.81466C22 4.48782 22 3.8244 21.5607 3.4122C21.1213 3 20.4142 3 19 3H5C3.58579 3 2.87868 3 2.43934 3.4122C2 3.8244 2 4.48782 2 5.81466V6.50448C2 7.54232 2 8.06124 2.2596 8.49142C2.5192 8.9216 2.99347 9.18858 3.94202 9.72255L6.85504 11.3624C7.49146 11.7206 7.80967 11.8998 8.03751 12.0976C8.51199 12.5095 8.80408 12.9935 8.93644 13.5872C9 13.8722 9 14.2058 9 14.8729L9 17.5424C9 18.452 9 18.9067 9.25192 19.2613C9.50385 19.6158 9.95128 19.7907 10.8462 20.1406C12.7248 20.875 13.6641 21.2422 14.3321 20.8244C15 20.4066 15 19.4519 15 17.5424V14.8729C15 14.2058 15 13.8722 15.0636 13.5872C15.1959 12.9935 15.488 12.5095 15.9625 12.0976"
-              stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-            />
-          </svg>
+          <!-- existing filter SVG -->
         </button>
         <button id="clearAllBtn" title="Clear all">Clear all</button>
       </div>
@@ -411,25 +551,11 @@
       <!-- pagination -->
       <div id="paginationControls">
         <button id="prevPageBtn" aria-label="Prev page">
-          <svg viewBox="0 0 24 24">
-            <path
-              d="M15 18l-6-6 6-6"
-              stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-            />
-          </svg>
+          <!-- prev SVG -->
         </button>
         <span id="pageIndicator">1 / 1</span>
         <button id="nextPageBtn" aria-label="Next page">
-          <svg viewBox="0 0 24 24">
-            <path
-              d="M9 6l6 6-6 6"
-              stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-            />
-          </svg>
+          <!-- next SVG -->
         </button>
       </div>
     </div>
