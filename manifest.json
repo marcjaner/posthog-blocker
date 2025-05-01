@@ -1,13 +1,16 @@
 {
   "manifest_version": 3,
   "name": "PostHog Self-Blocker",
-  "version": "1.0",
+  "version": "1.0.1",
   "description": "Block PostHog recordings on domains you choose",
   "permissions": ["storage"],
   "host_permissions": ["<all_urls>"],
   "options_ui": {
     "page": "options.html",
     "open_in_tab": true
+  },
+  "icons": {
+    "128": "icon128.png"
   },
   "content_scripts": [
     {
