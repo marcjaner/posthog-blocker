@@ -15,7 +15,7 @@ A Chrome extension that allows you to block PostHog analytics and recordings on 
 
 ## Installation
 
-1. Download the latest release from the [Chrome Web Store](https://chrome.google.com/webstore/detail/posthog-self-blocker/your-extension-id)
+1. Download the latest release from the [Chrome Web Store](https://chromewebstore.google.com/detail/posthog-self-blocker/hicioojgkpaeojpclncaojemmkliiblk)
 2. Or install manually:
    - Download the repository
    - Open Chrome and go to `chrome://extensions/`
