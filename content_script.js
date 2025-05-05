@@ -8,8 +8,6 @@
 
   if (!isBlocked) return;
 
-  console.log("🛡️ PostHog Self-Blocker active on", host);
-
   const stub = {
     capture: () => {},
     identify: () => {},
@@ -22,9 +20,7 @@
     configurable: true,
     enumerable: true,
     get: () => stub,
-    set: (newVal) => {
-      console.log("🔒 Blocked assignment of real posthog:", newVal);
-    },
+    set: (newVal) => {},
   });
 
   window.posthog = stub;
