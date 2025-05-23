@@ -7,16 +7,28 @@ async function syncRules() {
     await chrome.declarativeNetRequest.updateDynamicRules({ removeRuleIds });
   }
 
-  const addRules = blocked.map((host, i) => ({
-    id: i + 1,
-    priority: 1,
-    action: { type: "block" },
-    condition: {
-      urlFilter: "||eu.i.posthog.com/",
-      resourceTypes: ["xmlhttprequest", "ping"],
-      initiatorDomains: [host],
+  const addRules = blocked.flatMap((host, i) => [
+    {
+      id: i * 2 + 1,
+      priority: 1,
+      action: { type: "block" },
+      condition: {
+        urlFilter: "||eu.i.posthog.com/",
+        resourceTypes: ["xmlhttprequest", "ping"],
+        initiatorDomains: [host],
+      },
     },
-  }));
+    {
+      id: i * 2 + 2,
+      priority: 1,
+      action: { type: "block" },
+      condition: {
+        urlFilter: "||us.i.posthog.com/",
+        resourceTypes: ["xmlhttprequest", "ping"],
+        initiatorDomains: [host],
+      },
+    },
+  ]);
 
   if (addRules.length) {
     await chrome.declarativeNetRequest.updateDynamicRules({ addRules });
