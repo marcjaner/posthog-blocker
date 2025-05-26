@@ -4,14 +4,12 @@
     <meta charset="utf-8" />
     <title>Blocked Domains</title>
     <style>
-      /* global box-sizing */
       *,
       *::before,
       *::after {
         box-sizing: border-box;
       }
 
-      /* full-viewport, no scroll */
       html,
       body {
         height: 100%;
@@ -40,7 +38,6 @@
         text-align: center;
       }
 
-      /* count badge */
       #countBadge {
         font-size: 14px;
         color: #57606a;
@@ -50,7 +47,6 @@
         color: #aaa;
       }
 
-      /* fixed top-right bar */
       #topBar {
         position: fixed;
         top: 12px;
@@ -73,7 +69,6 @@
         opacity: 0.7;
       }
 
-      /* card container */
       .card {
         width: 100%;
         max-width: 480px;
@@ -90,7 +85,6 @@
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
       }
 
-      /* main controls row */
       #controls {
         display: flex;
         gap: 8px;
@@ -126,7 +120,6 @@
         background-color: #e55d04;
       }
 
-      /* filter & clear in controls */
       #controls button:not(#addBtn) {
         background: none;
         border: none;
@@ -166,7 +159,6 @@
         color: #ddd;
       }
 
-      /* table */
       table {
         width: 100%;
         border-collapse: collapse;
@@ -211,7 +203,6 @@
         background: #2e2e2e;
       }
 
-      /* action buttons */
       .action-btn {
         background: transparent;
         color: #f97316;
@@ -224,7 +215,6 @@
         text-decoration: underline;
       }
 
-      /* pagination */
       #paginationControls {
         display: flex;
         justify-content: center;
@@ -254,7 +244,6 @@
         color: #ddd;
       }
 
-      /* footer */
       footer {
         position: fixed;
         bottom: 8px;
@@ -349,7 +338,6 @@
     </style>
   </head>
   <body>
-    <!-- existing custom modal for prompts -->
     <div id="modalOverlay" class="modal-overlay">
       <div class="modal-content">
         <p id="modalMessage" class="modal-message"></p>
@@ -361,7 +349,6 @@
       </div>
     </div>
 
-    <!-- ISSUE modal -->
     <div id="issueOverlay" class="modal-overlay">
       <div class="modal-content" style="width: 300px">
         <h2 class="modal-message" style="margin: 0 0 12px">Have an issue?</h2>
@@ -377,7 +364,6 @@
       </div>
     </div>
 
-    <!-- ABOUT modal -->
     <div id="aboutOverlay" class="modal-overlay">
       <div class="modal-content" style="width: 300px">
         <h2 class="modal-message" style="margin: 0 0 12px">
@@ -398,7 +384,6 @@
       </div>
     </div>
 
-    <!-- DARK MODE + NEW ICONS -->
     <div id="topBar">
       <button id="issueBtn" title="Have an issue?">
         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -446,7 +431,6 @@
     <div id="countBadge">You've blocked <strong>0</strong> domains</div>
 
     <div class="card">
-      <!-- main controls -->
       <div id="controls">
         <input id="domainInput" placeholder="example.com" />
         <button id="addBtn">Add</button>
@@ -468,12 +452,10 @@
         <button id="clearAllBtn" title="Clear all">Clear all</button>
       </div>
 
-      <!-- filter input -->
       <div id="filterContainer" style="display: none">
         <input id="filterInput" placeholder="Search domains…" />
       </div>
 
-      <!-- domain table -->
       <table>
         <colgroup>
           <col />
@@ -497,15 +479,10 @@
         </tbody>
       </table>
 
-      <!-- pagination -->
       <div id="paginationControls">
-        <button id="prevPageBtn" aria-label="Prev page">
-          <!-- prev SVG -->
-        </button>
+        <button id="prevPageBtn" aria-label="Prev page"></button>
         <span id="pageIndicator">1 / 1</span>
-        <button id="nextPageBtn" aria-label="Next page">
-          <!-- next SVG -->
-        </button>
+        <button id="nextPageBtn" aria-label="Next page"></button>
       </div>
     </div>
 

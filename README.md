@@ -54,6 +54,12 @@ The extension uses multiple techniques to ensure PostHog is completely blocked:
 2. Make your changes
 3. Load the extension in Chrome using "Load unpacked"
 
+Compress by running
+
+```
+zip -r posthog-self-blocker.zip manifest.json content_script.js options.html options.js icon128.png icon128_white.png rules.json background.js
+```
+
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
