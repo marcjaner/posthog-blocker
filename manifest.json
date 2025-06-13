@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "PostHog Self-Blocker",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Block PostHog recordings on domains you choose",
   "permissions": ["storage", "declarativeNetRequest"],
   "host_permissions": ["<all_urls>"],
